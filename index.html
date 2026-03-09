@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Copy Space Cleaner</title>
+    <style>
+      :root {
+        --bg: #f6f8f5;
+        --bg-accent: #eaf2e6;
+        --panel: #ffffff;
+        --ink: #172016;
+        --muted: #526053;
+        --line: #d6e0d2;
+        --brand: #2f8f55;
+        --brand-strong: #1f6c3d;
+        --warn: #b35d00;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 10% 10%, #d9ead0 0%, transparent 36%),
+          radial-gradient(circle at 85% 15%, #d4ece0 0%, transparent 32%),
+          linear-gradient(120deg, var(--bg) 0%, var(--bg-accent) 100%);
+      }
+
+      .wrap {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 20px 16px 24px;
+      }
+
+      .top {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        padding: 14px;
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        backdrop-filter: blur(5px);
+        animation: rise 0.45s ease;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(20px, 2vw, 26px);
+        letter-spacing: 0.02em;
+      }
+
+      .desc {
+        width: 100%;
+        color: var(--muted);
+        margin-top: -2px;
+        font-size: 14px;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      button {
+        border: 1px solid var(--line);
+        background: #fff;
+        color: var(--ink);
+        padding: 8px 12px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: transform 120ms ease, border-color 120ms ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+        border-color: #a8c9b1;
+      }
+
+      .btn-brand {
+        background: var(--brand);
+        color: #fff;
+        border-color: var(--brand-strong);
+      }
+
+      .toggles {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 14px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .status {
+        width: 100%;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .status.warn {
+        color: var(--warn);
+      }
+
+      .rules {
+        width: 100%;
+        border: 1px dashed var(--line);
+        border-radius: 12px;
+        padding: 10px 12px;
+        background: #fcfffb;
+      }
+
+      .rules summary {
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .rule-grid {
+        margin-top: 8px;
+        display: grid;
+        gap: 8px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .rule-grid label {
+        justify-content: flex-start;
+      }
+
+      .unit-label {
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 13px;
+        justify-content: flex-start;
+      }
+
+      .unit-input {
+        width: 100%;
+        margin-top: 6px;
+        padding: 8px 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        font-size: 13px;
+      }
+
+      .rule-note {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .grid {
+        margin-top: 14px;
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 10px;
+        animation: rise 0.5s ease;
+      }
+
+      .card-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin: 2px 4px 8px;
+      }
+
+      .card-head strong {
+        font-size: 15px;
+      }
+
+      .count {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 62vh;
+        resize: vertical;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 15px;
+        line-height: 1.6;
+        background: #fdfefd;
+        color: var(--ink);
+      }
+
+      textarea:focus {
+        outline: 2px solid #b8d8c0;
+        border-color: #9ec9ab;
+      }
+
+      @keyframes rise {
+        from {
+          transform: translateY(6px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 980px) {
+        .rule-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+
+        textarea {
+          min-height: 40vh;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="top">
+        <h1>Copy Space Cleaner</h1>
+        <div class="desc">复制网页/PDF 文本后，自动清理中文多余空格，实时生成并可编辑 Markdown。</div>
+
+        <div class="actions">
+          <button id="openFile" class="btn-brand">打开已有 md</button>
+          <button id="newFile">新建/另存为 md</button>
+          <button id="saveNow">覆盖保存</button>
+          <button id="appendNow">追加保存</button>
+          <button id="download">下载 md</button>
+          <button id="cleanOnce">立即清理</button>
+        </div>
+
+        <div class="toggles">
+          <label><input type="checkbox" id="autoSync" checked /> 自动从原文实时生成</label>
+          <label><input type="checkbox" id="autoSave" /> 自动覆盖保存到 md</label>
+        </div>
+
+        <details class="rules" open>
+          <summary>规则设置（Word 友好）</summary>
+          <div class="rule-grid">
+            <label><input type="checkbox" id="ruleZhZh" checked /> 中文与中文无空格</label>
+            <label><input type="checkbox" id="ruleZhLatin" checked /> 中文与英文/数字无空格</label>
+            <label><input type="checkbox" id="rulePunc" checked /> 中文标点前后无空格</label>
+            <label><input type="checkbox" id="ruleUnit" checked /> 数字与单位保留一个空格</label>
+            <label><input type="checkbox" id="ruleLatinSpace" checked /> 英文段落多空格压成一个</label>
+            <label><input type="checkbox" id="ruleLine" checked /> 清理行尾空白与过多空行</label>
+          </div>
+          <label class="unit-label" for="unitList">单位列表（逗号分隔，可自行增删）</label>
+          <input
+            id="unitList"
+            class="unit-input"
+            value="kg,g,mg,ug,μg,km,m,cm,mm,km/h,m/s,MB/s,GB/s,KB/s,MB,GB,TB,kB,KB,Hz,kHz,MHz,GHz,ms,s,min,h,°C,℃,kWh,W,kW,V,mV,mA,A,Pa,kPa,MPa,bar,rpm,px,pt,dpi"
+          />
+          <p class="rule-note">示例：我是 AI -> 我是AI；下载速度 10MB/s -> 下载速度10 MB/s。</p>
+        </details>
+
+        <div id="status" class="status">未选择文件。你也可以先粘贴内容，再点击“下载 md”。</div>
+      </div>
+
+      <div class="grid">
+        <section class="card">
+          <div class="card-head">
+            <strong>原始文本（粘贴区）</strong>
+            <span class="count" id="rawCount">0 字</span>
+          </div>
+          <textarea id="rawInput" placeholder="把网页/PDF复制的内容粘贴到这里…"></textarea>
+        </section>
+
+        <section class="card">
+          <div class="card-head">
+            <strong>Markdown（清理后，可继续编辑）</strong>
+            <span class="count" id="cleanCount">0 字</span>
+          </div>
+          <textarea id="cleanOutput" placeholder="清理后的 Markdown 会在这里生成…"></textarea>
+        </section>
+      </div>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
