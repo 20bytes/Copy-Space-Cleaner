@@ -1,5 +1,6 @@
 # 🧹 Copy Space Cleaner
 
+![License](https://img.shields.io/badge/license-MIT-green)
 ![Type](https://img.shields.io/badge/type-zero--dependency-blue)
 ![Status](https://img.shields.io/badge/status-archived-lightgrey)
 
@@ -74,3 +75,9 @@ python3 -m http.server 5173
 | `index.html` | 界面 |
 | `app.js` | 规则引擎、清理与文件保存逻辑 |
 | `README.md` | 说明文档 |
+
+---
+
+## License
+
+MIT © 20bytes
